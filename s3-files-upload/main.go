@@ -10,19 +10,25 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"os"
 	"strings"
 )
 
-const (
-	region     = "us-east-1"
-	accessKey  = ""
-	secretKey  = ""
-	bucketName = ""
+var (
+	region     string
+	accessKey  string
+	secretKey  string
+	bucketName string
+	uploader   *s3manager.Uploader
 )
 
-var uploader *s3manager.Uploader
-
 func init() {
+	// init env variables
+	region = os.Getenv("AWS_REGION")
+	accessKey = os.Getenv("AWS_ACCESS_KEY")
+	secretKey = os.Getenv("AWS_SECRET_KEY")
+	bucketName = os.Getenv("AWS_BUCKET_NAME")
+
 	// init aws session
 	awsSession, err := session.NewSessionWithOptions(session.Options{
 		Config: aws.Config{
